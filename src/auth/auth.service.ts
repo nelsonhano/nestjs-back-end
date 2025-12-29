@@ -3,8 +3,8 @@ import * as argon from 'argon2';
 
 import { PrismaOrmService } from 'src/prisma-orm/prisma-orm.service';
 import { AuthDTO } from './dto';
-import { User } from 'src/generated/prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
+import { User } from 'generated/prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -17,11 +17,15 @@ export class AuthService {
       const user: User = await this.prismaService.user.create({
         data: {
           email: dto.email,
-          password: hashedPassword,
+          hash: hashedPassword,
         },
       });
 
-      return { message: 'User created successfully', userId: user.id };
+      return {
+        message: 'User created successfully',
+        userId: user.id,
+        email: user.email,
+      };
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError && e.code === 'P2002') {
         throw new ConflictException(`Email ${dto.email} already used.`);

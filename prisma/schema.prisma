@@ -1,6 +1,6 @@
 generator client {
   provider      = "prisma-client"
-  output        = "../src/generated/prisma"
+  output        = "../generated/prisma"
   moduleFormat  = "cjs"
 }
 
@@ -12,12 +12,12 @@ model User {
   id        String     @id @default(uuid())
   email     String     @unique
   name      String?
-  password  String?
+  hash  String?
   createdAt DateTime   @default(now())
   updatedAt DateTime  @updatedAt
   bookmarks Bookmark[]
 
-  @@map("user")
+  @@map("users")
 }
 
 model Bookmark {
@@ -30,5 +30,5 @@ model Bookmark {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("bookmark")
+  @@map("bookmarks")
 }
